@@ -4,7 +4,7 @@ export default defineType({
   name: 'attraction',
   title: 'Attraction',
   type: 'document',
-  // Added comment to test Git tracking
+  description: 'Places of interest that can be shown on the map',
   fields: [
     {
       name: 'name',
