@@ -1,8 +1,5 @@
 module.exports = {
-  extends: [
-    '../../eslint.config.base.js',
-    '@sanity/eslint-config-studio',
-  ],
+  extends: ['../../eslint.config.base.js', '@sanity/eslint-config-studio'],
   parser: '@babel/eslint-parser',
   parserOptions: {
     requireConfigFile: false,

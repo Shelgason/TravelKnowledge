@@ -1,8 +1,5 @@
 module.exports = {
-  extends: [
-    '../../eslint.config.base.js',
-    'next/core-web-vitals',
-  ],
+  extends: ['../../eslint.config.base.js', 'next/core-web-vitals'],
   settings: {
     next: {
       rootDir: __dirname,
@@ -15,4 +12,4 @@ module.exports = {
       presets: ['@babel/preset-env', '@babel/preset-react'],
     },
   },
-}
+};

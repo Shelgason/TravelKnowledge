@@ -19,13 +19,16 @@ module.exports = {
     },
   },
   rules: {
-    'prettier/prettier': ['error', {
-      endOfLine: 'auto',
-    }],
+    'prettier/prettier': [
+      'error',
+      {
+        endOfLine: 'auto',
+      },
+    ],
     '@typescript-eslint/explicit-module-boundary-types': 'off',
     '@typescript-eslint/no-unused-vars': ['error', { argsIgnorePattern: '^_' }],
     '@typescript-eslint/no-explicit-any': 'warn',
     'react/react-in-jsx-scope': 'off',
   },
   ignorePatterns: ['node_modules', 'dist', '.next', 'build'],
-}
+};

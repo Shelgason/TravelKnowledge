@@ -6,10 +6,14 @@ import attraction from './schemas/attraction'
 
 export default defineConfig({
   name: 'default',
-  title: 'TravelKnowledge',
-
+  title: 'TravelKnowledge Studio',
+  
   projectId: 'oa7cdunj',
   dataset: 'production',
+  
+  server: {
+    port: 3333,
+  },
 
   plugins: [deskTool(), visionTool()],
 
