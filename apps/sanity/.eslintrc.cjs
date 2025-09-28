@@ -1,13 +1,8 @@
 module.exports = {
   extends: [
     '../../eslint.config.base.js',
-    'next/core-web-vitals',
+    '@sanity/eslint-config-studio',
   ],
-  settings: {
-    next: {
-      rootDir: __dirname,
-    },
-  },
   parser: '@babel/eslint-parser',
   parserOptions: {
     requireConfigFile: false,
@@ -15,4 +10,4 @@ module.exports = {
       presets: ['@babel/preset-env'],
     },
   },
-}
+};
