@@ -1,4 +1,4 @@
-import { defineType } from 'sanity'
+import { defineType } from 'sanity';
 
 export default defineType({
   name: 'attraction',
@@ -10,7 +10,7 @@ export default defineType({
       name: 'name',
       title: 'Name',
       type: 'string',
-      validation: Rule => Rule.required()
+      validation: Rule => Rule.required(),
     },
     {
       name: 'slug',
@@ -20,20 +20,20 @@ export default defineType({
         source: 'name',
         maxLength: 96,
       },
-      validation: Rule => Rule.required()
+      validation: Rule => Rule.required(),
     },
     {
       name: 'coords',
       title: 'Coordinates',
       type: 'geopoint',
-      validation: Rule => Rule.required()
+      validation: Rule => Rule.required(),
     },
     {
       name: 'description',
       title: 'Description',
       type: 'text',
       rows: 3,
-      validation: Rule => Rule.required()
-    }
-  ]
-})
+      validation: Rule => Rule.required(),
+    },
+  ],
+});
