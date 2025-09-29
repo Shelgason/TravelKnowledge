@@ -21,53 +21,43 @@ function FilterBar({ className = '' }: FilterBarProps) {
 }
 
 export default async function MapPage() {
-  try {
-    const attractions = await fetchAttractionsForMap();
-    console.log('MapPage: Fetched attractions:', attractions?.length ?? 0);
+  const attractions = await fetchAttractionsForMap();
 
-    const defaultAttractions = attractions?.length
-      ? attractions
-      : [
-          {
-            slug: { current: 'blue-lagoon' },
-            name: 'Blue Lagoon',
-            coords: { lat: 64.128288, lng: -22.452015 },
-            category: 'spa',
-          },
-          {
-            slug: { current: 'gullfoss' },
-            name: 'Gullfoss Waterfall',
-            coords: { lat: 64.327302, lng: -20.121095 },
-            category: 'waterfall',
-          },
-        ];
+  const defaultAttractions = attractions?.length
+    ? attractions
+    : [
+        {
+          slug: { current: 'blue-lagoon' },
+          name: 'Blue Lagoon',
+          coords: { lat: 64.128288, lng: -22.452015 },
+          category: 'spa',
+        },
+        {
+          slug: { current: 'gullfoss' },
+          name: 'Gullfoss Waterfall',
+          coords: { lat: 64.327302, lng: -20.121095 },
+          category: 'waterfall',
+        },
+      ];
 
-    return (
-      <div className="max-w-7xl mx-auto px-4 py-8 min-h-screen">
-        <h1 className="text-4xl font-bold mb-8">Explore Attractions</h1>
-        <FilterBar />
-        <div className="w-full h-[600px] bg-gray-100 rounded-lg overflow-hidden">
-          <MapShell
-            pois={defaultAttractions.map(attraction => ({
-              slug: attraction.slug.current,
-              name: attraction.name,
-              lat: attraction.coords.lat,
-              lng: attraction.coords.lng,
-              category: attraction.category,
-            }))}
-          />
-        </div>
+  return (
+    <div className="max-w-4xl mx-auto p-8">
+      <h1 className="text-2xl font-bold mb-4">Explore Iceland</h1>
+      <div
+        style={{ height: '700px' }}
+        className="w-full bg-white rounded-lg shadow-sm overflow-hidden"
+      >
+        <MapShell
+          key="map-shell-v1" // Adding a version key
+          pois={defaultAttractions.map(attraction => ({
+            slug: attraction.slug.current,
+            name: attraction.name,
+            lat: attraction.coords.lat,
+            lng: attraction.coords.lng,
+            category: attraction.category,
+          }))}
+        />
       </div>
-    );
-  } catch (error: any) {
-    console.error('MapPage: Error fetching attractions:', error);
-    return (
-      <div className="max-w-7xl mx-auto px-4 py-8">
-        <h1 className="text-4xl font-bold mb-8">Explore Attractions</h1>
-        <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded">
-          Error loading attractions. Please try again later.
-        </div>
-      </div>
-    );
-  }
+    </div>
+  );
 }
