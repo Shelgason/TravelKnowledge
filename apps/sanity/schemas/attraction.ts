@@ -1,4 +1,4 @@
-import { defineType } from 'sanity';
+import { defineType, Rule } from 'sanity';
 
 export default defineType({
   name: 'attraction',
@@ -25,7 +25,11 @@ export default defineType({
     {
       name: 'coords',
       title: 'Coordinates',
-      type: 'geopoint',
+      type: 'object',
+      fields: [
+        { name: 'lat', type: 'number', title: 'Latitude' },
+        { name: 'lng', type: 'number', title: 'Longitude' },
+      ],
       validation: Rule => Rule.required(),
     },
     {
@@ -34,6 +38,59 @@ export default defineType({
       type: 'text',
       rows: 3,
       validation: Rule => Rule.required(),
+    },
+    {
+      name: 'region',
+      title: 'Region',
+      type: 'reference',
+      to: [{ type: 'region' }],
+      validation: Rule => Rule.required(),
+    },
+    {
+      name: 'category',
+      title: 'Category',
+      type: 'string',
+      options: {
+        list: [
+          { title: 'Waterfall', value: 'waterfall' },
+          { title: 'Geothermal', value: 'geothermal' },
+          { title: 'Glacier', value: 'glacier' },
+          { title: 'Beach', value: 'beach' },
+          { title: 'Canyon', value: 'canyon' },
+          { title: 'Pool', value: 'pool' },
+          { title: 'Museum', value: 'museum' },
+          { title: 'Hike', value: 'hike' },
+        ],
+      },
+      validation: Rule => Rule.required(),
+    },
+    {
+      name: 'visitDurationMin',
+      title: 'Minimum Visit Duration (minutes)',
+      type: 'number',
+      validation: Rule => Rule.min(0),
+    },
+    {
+      name: 'visitDurationMax',
+      title: 'Maximum Visit Duration (minutes)',
+      type: 'number',
+      validation: Rule => Rule.min(Rule.valueOfField('visitDurationMin') || 0),
+    },
+    {
+      name: 'facilities',
+      title: 'Facilities',
+      type: 'array',
+      of: [{ type: 'string' }],
+      options: {
+        list: [
+          { title: 'Parking', value: 'parking' },
+          { title: 'Restrooms', value: 'restrooms' },
+          { title: 'Restaurant', value: 'restaurant' },
+          { title: 'Gift Shop', value: 'gift-shop' },
+          { title: 'Visitor Center', value: 'visitor-center' },
+          { title: 'Wheelchair Access', value: 'wheelchair-access' },
+        ],
+      },
     },
     {
       name: 'mainImage',
@@ -56,19 +113,6 @@ export default defineType({
           },
         },
       ],
-    },
-    {
-      name: 'category',
-      title: 'Category',
-      type: 'string',
-      options: {
-        list: [
-          { title: 'Natural Wonder', value: 'natural' },
-          { title: 'Historical Site', value: 'historical' },
-          { title: 'Cultural Landmark', value: 'cultural' },
-          { title: 'Urban Attraction', value: 'urban' },
-        ],
-      },
     },
   ],
   preview: {
