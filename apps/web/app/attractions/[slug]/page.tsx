@@ -1,33 +1,91 @@
 import { notFound } from 'next/navigation';
-import { attractions } from '@/lib/attractions';
-import { AttractionCard } from '@/components/AttractionCard';
+import Link from 'next/link';
+import { fetchAttractionBySlug, urlFor } from '@/lib/sanity';
+import Image from 'next/image';
 
-interface Props {
-  params: { slug: string };
+interface PageProps {
+  params: {
+    slug: string;
+  };
 }
 
-export async function generateStaticParams() {
-  return attractions.map(attraction => ({
-    slug: attraction.slug,
-  }));
-}
-
-export default function AttractionPage({ params }: Props) {
-  const attraction = attractions.find(a => a.slug === params.slug);
+export default async function AttractionPage({ params }: PageProps) {
+  const attraction = await fetchAttractionBySlug(params.slug);
 
   if (!attraction) {
     notFound();
   }
 
   return (
-    <div className="max-w-4xl mx-auto">
-      <AttractionCard
-        name={attraction.name}
-        description={attraction.description}
-        image={attraction.images[0]}
-        lat={attraction.location.lat}
-        lng={attraction.location.lng}
-      />
-    </div>
+    <main className="container mx-auto px-4 py-8 max-w-4xl">
+      {attraction.mainImage && (
+        <div className="relative w-full h-64 md:h-96 mb-8 rounded-lg overflow-hidden">
+          <Image
+            src={urlFor(attraction.mainImage)?.url() || ''}
+            alt={attraction.name}
+            fill
+            className="object-cover"
+          />
+        </div>
+      )}
+      <div className="mb-8">
+        <h1 className="text-4xl font-bold mb-2">{attraction.name}</h1>
+        {attraction.category && (
+          <span className="inline-block px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-sm">
+            {attraction.category}
+          </span>
+        )}
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8 bg-gray-50 p-6 rounded-lg">
+        <div>
+          <h3 className="font-semibold text-gray-600 mb-1">Region</h3>
+          <p>{attraction.region.name}</p>
+        </div>
+        <div>
+          <h3 className="font-semibold text-gray-600 mb-1">Visit Duration</h3>
+          <p>
+            {attraction.visitDurationMin || '?'} - {attraction.visitDurationMax || '?'} hours
+          </p>
+        </div>
+        {attraction.facilities && attraction.facilities.length > 0 && (
+          <div>
+            <h3 className="font-semibold text-gray-600 mb-1">Facilities</h3>
+            <ul className="space-y-1">
+              {attraction.facilities.map(facility => (
+                <li key={facility} className="text-sm">
+                  {facility}
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
+      </div>
+
+      {attraction.description && (
+        <div className="prose max-w-none mb-8">
+          <p className="text-gray-700 leading-relaxed">{attraction.description}</p>
+        </div>
+      )}
+
+      <Link
+        href="/map"
+        className="inline-flex items-center text-blue-600 hover:text-blue-800 transition-colors"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          className="h-4 w-4 mr-2"
+          viewBox="0 0 20 20"
+          fill="currentColor"
+        >
+          <path
+            fillRule="evenodd"
+            d="M9.707 16.707a1 1 0 01-1.414 0l-6-6a1 1 0 010-1.414l6-6a1 1 0 011.414 1.414L4.414 9H17a1 1 0 110 2H4.414l5.293 5.293a1 1 0 010 1.414z"
+            clipRule="evenodd"
+          />
+        </svg>
+        Back to Map
+      </Link>
+    </main>
   );
 }
