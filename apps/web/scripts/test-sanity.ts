@@ -1,5 +1,5 @@
 import 'dotenv/config';
-import { client, fetchAttractionsForMap } from '@/lib/sanity';
+import { client, fetchAttractionsForMap, MapAttraction } from '../lib/sanity';
 
 // Test script to verify Sanity connection and data fetching
 async function testSanityConnection() {
@@ -13,7 +13,7 @@ async function testSanityConnection() {
     console.log('\nTesting attractions query...');
     const attractions = await fetchAttractionsForMap();
     console.log(`Found ${attractions.length} attractions:`);
-    attractions.forEach(a => {
+    attractions.forEach((a: MapAttraction) => {
       console.log(`- ${a.name} (${a.category}) in region: ${a.region?.name || 'No region'}`);
     });
   } catch (error) {

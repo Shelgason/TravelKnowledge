@@ -1,19 +1,21 @@
 import { createClient } from '@sanity/client';
-import { SanityImageSource } from '@sanity/image-url/lib/types/types';
 import imageUrlBuilder from '@sanity/image-url';
+import type { SanityAsset } from '@sanity/image-url/lib/types/types';
 
+// Validate environment variables
 if (!process.env.SANITY_PROJECT_ID) {
-  throw new Error('Missing SANITY_PROJECT_ID in environment variables');
+  throw new Error('Missing SANITY_PROJECT_ID');
 }
 
 if (!process.env.SANITY_DATASET) {
-  throw new Error('Missing SANITY_DATASET in environment variables');
+  throw new Error('Missing SANITY_DATASET');
 }
 
 if (!process.env.SANITY_API_VERSION) {
-  throw new Error('Missing SANITY_API_VERSION in environment variables');
+  throw new Error('Missing SANITY_API_VERSION');
 }
 
+// Create Sanity client
 export const client = createClient({
   projectId: process.env.SANITY_PROJECT_ID,
   dataset: process.env.SANITY_DATASET,
@@ -21,14 +23,15 @@ export const client = createClient({
   useCdn: process.env.NODE_ENV === 'production',
 });
 
+// Set up image builder
 const builder = imageUrlBuilder(client);
 
-export function urlFor(source: SanityImageSource) {
-  return builder.image(source);
+export function urlFor(source: SanityAsset | null) {
+  return source ? builder.image(source) : null;
 }
 
 export interface MapAttraction {
-  slug: string;
+  slug: { current: string };
   name: string;
   coords: {
     lat: number;
@@ -36,7 +39,7 @@ export interface MapAttraction {
   };
   category: string;
   region: {
-    slug: string;
+    slug: { current: string };
     name: string;
   };
 }
@@ -44,31 +47,36 @@ export interface MapAttraction {
 export async function fetchAttractionsForMap(): Promise<MapAttraction[]> {
   return client.fetch(
     `*[_type == "attraction"] {
-      slug,
+      "slug": slug.current,
       name,
       coords,
       category,
       region->{
-        slug,
+        "slug": slug.current,
         name
       }
     }`
   );
 }
 
-export interface FullAttraction extends MapAttraction {
+export interface FullAttraction extends Omit<MapAttraction, 'region'> {
   description: string;
   visitDurationMin?: number;
   visitDurationMax?: number;
   facilities: string[];
-  mainImage: any; // You can type this more strictly if needed
-  gallery: any[]; // You can type this more strictly if needed
+  mainImage: SanityAsset;
+  gallery: SanityAsset[];
+  region: {
+    slug: { current: string };
+    name: string;
+    intro: string;
+  };
 }
 
 export async function fetchAttractionBySlug(slug: string): Promise<FullAttraction | null> {
   const attractions = await client.fetch(
-    `*[_type == "attraction" && slug.current == $slug] {
-      slug,
+    `*[_type == "attraction" && slug.current == $slug][0] {
+      "slug": slug.current,
       name,
       coords,
       category,
@@ -79,33 +87,34 @@ export async function fetchAttractionBySlug(slug: string): Promise<FullAttractio
       mainImage,
       gallery,
       region->{
-        slug,
-        name
+        "slug": slug.current,
+        name,
+        intro
       }
     }`,
     { slug }
   );
 
-  return attractions[0] || null;
+  return attractions || null;
 }
 
 export interface Guide {
   title: string;
-  slug: string;
+  slug: { current: string };
   body: any[]; // This is for portable text content
 }
 
 export async function fetchGuideBySlug(slug: string): Promise<Guide | null> {
   const guides = await client.fetch(
-    `*[_type == "guide" && slug.current == $slug] {
+    `*[_type == "guide" && slug.current == $slug][0] {
       title,
-      slug,
+      "slug": slug.current,
       body
     }`,
     { slug }
   );
 
-  return guides[0] || null;
+  return guides || null;
 }
 
 // Helper to ensure slugs are properly referenced
