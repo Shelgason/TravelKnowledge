@@ -70,8 +70,8 @@ export default function MapShell({ pois }: MapShellProps) {
           markerEl.style.border = '2px solid white';
           markerEl.style.boxShadow = '0 2px 4px rgba(0,0,0,0.2)';
           markerEl.style.cursor = 'pointer';
-          markerEl.style.backgroundColor = poi.category ? '' : '#3b82f6';
-          markerEl.className = poi.category ? `marker-${poi.category}` : '';
+          markerEl.className = `marker-${poi.category || 'default'}`;
+          markerEl.style.backgroundColor = '';
 
           console.log('Creating popup for POI:', poi);
           const slugValue = typeof poi.slug === 'string' ? poi.slug : poi.slug.current;

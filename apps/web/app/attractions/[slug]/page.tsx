@@ -46,7 +46,7 @@ export default async function AttractionPage({ params }: PageProps) {
       {attraction.mainImage && (
         <div className="relative w-full h-64 md:h-96 mb-8 rounded-lg overflow-hidden">
           <Image
-            src={urlFor(attraction.mainImage)?.url() || ''}
+            src={urlFor(attraction.mainImage)!.url()}
             alt={attraction.name}
             fill
             className="object-cover"
@@ -70,7 +70,9 @@ export default async function AttractionPage({ params }: PageProps) {
         <div>
           <h3 className="font-semibold text-gray-600 mb-1">Visit Duration</h3>
           <p>
-            {attraction.visitDurationMin || '?'} - {attraction.visitDurationMax || '?'} hours
+            {attraction.visitDurationMin
+              ? `${attraction.visitDurationMin} - ${attraction.visitDurationMax || attraction.visitDurationMin} hours`
+              : 'Duration not specified'}
           </p>
         </div>
         {attraction.facilities && attraction.facilities.length > 0 && (
