@@ -1,7 +1,29 @@
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
-import { fetchAttractionBySlug, urlFor } from '@/lib/sanity';
+import { fetchAttractionBySlug, urlFor, fetchAttractionsForMap } from '@/lib/sanity';
 import Image from 'next/image';
+import { Metadata } from 'next';
+
+export async function generateStaticParams() {
+  const attractions = await fetchAttractionsForMap();
+  return attractions.map(attraction => ({
+    slug: attraction.slug.current,
+  }));
+}
+
+export async function generateMetadata({
+  params,
+}: {
+  params: { slug: string };
+}): Promise<Metadata> {
+  const attraction = await fetchAttractionBySlug(params.slug);
+  if (!attraction) return { title: 'Not Found' };
+
+  return {
+    title: `${attraction.name} - TravelKnowledge`,
+    description: attraction.description,
+  };
+}
 
 interface PageProps {
   params: {
@@ -10,9 +32,12 @@ interface PageProps {
 }
 
 export default async function AttractionPage({ params }: PageProps) {
+  console.log('Fetching attraction with slug:', params.slug);
   const attraction = await fetchAttractionBySlug(params.slug);
+  console.log('Fetched attraction:', attraction);
 
   if (!attraction) {
+    console.log('Attraction not found, returning 404');
     notFound();
   }
 

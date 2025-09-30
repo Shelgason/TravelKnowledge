@@ -47,12 +47,12 @@ export interface MapAttraction {
 export async function fetchAttractionsForMap(): Promise<MapAttraction[]> {
   return client.fetch(
     `*[_type == "attraction"] {
-      "slug": slug.current,
+      slug,
       name,
       coords,
       category,
       region->{
-        "slug": slug.current,
+        slug,
         name
       }
     }`
@@ -74,8 +74,9 @@ export interface FullAttraction extends Omit<MapAttraction, 'region'> {
 }
 
 export async function fetchAttractionBySlug(slug: string): Promise<FullAttraction | null> {
+  console.log('Fetching attraction with slug:', slug);
   const attractions = await client.fetch(
-    `*[_type == "attraction" && slug.current == $slug][0] {
+    `*[_type == "attraction" && slug.current == $slug][0]{
       "slug": slug.current,
       name,
       coords,
@@ -86,7 +87,7 @@ export async function fetchAttractionBySlug(slug: string): Promise<FullAttractio
       facilities,
       mainImage,
       gallery,
-      region->{
+      "region": region->{
         "slug": slug.current,
         name,
         intro

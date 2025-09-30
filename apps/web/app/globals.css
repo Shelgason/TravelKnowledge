@@ -30,11 +30,15 @@ body {
 
 /* Marker styles */
 .marker-waterfall {
-  background-color: #3b82f6; /* blue-500 */
+  background-color: #2563eb; /* blue-600 */
 }
 
 .marker-spa {
   background-color: #14b8a6; /* teal-500 */
+}
+
+.marker-pool {
+  background-color: #14b8a6; /* teal-500 - same as spa */
 }
 
 .marker-glacier {
@@ -55,4 +59,8 @@ body {
 
 .marker-museum {
   background-color: #b91c1c; /* red-700 */
+}
+
+.marker-default {
+  background-color: #3b82f6; /* blue-500 */
 }

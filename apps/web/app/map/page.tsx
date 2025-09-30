@@ -23,22 +23,18 @@ function FilterBar({ className = '' }: FilterBarProps) {
 export default async function MapPage() {
   const attractions = await fetchAttractionsForMap();
 
-  const defaultAttractions = attractions?.length
-    ? attractions
-    : [
-        {
-          slug: { current: 'blue-lagoon' },
-          name: 'Blue Lagoon',
-          coords: { lat: 64.128288, lng: -22.452015 },
-          category: 'spa',
-        },
-        {
-          slug: { current: 'gullfoss' },
-          name: 'Gullfoss Waterfall',
-          coords: { lat: 64.327302, lng: -20.121095 },
-          category: 'waterfall',
-        },
-      ];
+  if (!attractions?.length) {
+    return (
+      <div className="max-w-4xl mx-auto p-8">
+        <h1 className="text-2xl font-bold mb-4">Explore Iceland</h1>
+        <div className="bg-yellow-50 border border-yellow-200 p-4 rounded">
+          <p className="text-yellow-800">
+            No attractions found. Please add some in the Sanity studio.
+          </p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="max-w-4xl mx-auto p-8">
@@ -49,7 +45,7 @@ export default async function MapPage() {
       >
         <MapShell
           key="map-shell-v1" // Adding a version key
-          pois={defaultAttractions.map(attraction => ({
+          pois={attractions.map(attraction => ({
             slug: attraction.slug.current,
             name: attraction.name,
             lat: attraction.coords.lat,

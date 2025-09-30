@@ -5,7 +5,7 @@ import mapboxgl, { Map as MapboxMap } from 'mapbox-gl';
 import 'mapbox-gl/dist/mapbox-gl.css';
 
 interface POI {
-  slug: string;
+  slug: string | { current: string };
   name: string;
   lat: number;
   lng: number;
@@ -17,6 +17,7 @@ interface MapShellProps {
 }
 
 export default function MapShell({ pois }: MapShellProps) {
+  console.log('MapShell rendered with pois:', pois);
   const mapContainer = useRef<HTMLDivElement>(null);
   const [loaded, setLoaded] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -56,19 +57,30 @@ export default function MapShell({ pois }: MapShellProps) {
       });
 
       map.on('load', () => {
+        console.log('Map loaded, adding markers for pois:', pois);
         setLoaded(true);
 
         // Add markers
         pois.forEach(poi => {
+          console.log('Creating marker for:', poi);
           const markerEl = document.createElement('div');
-          markerEl.className = `w-6 h-6 rounded-full bg-blue-500 border-2 border-white shadow-lg
-            ${poi.category ? `marker-${poi.category}` : ''}`;
+          markerEl.style.width = '24px';
+          markerEl.style.height = '24px';
+          markerEl.style.borderRadius = '50%';
+          markerEl.style.border = '2px solid white';
+          markerEl.style.boxShadow = '0 2px 4px rgba(0,0,0,0.2)';
+          markerEl.style.cursor = 'pointer';
+          markerEl.style.backgroundColor = poi.category ? '' : '#3b82f6';
+          markerEl.className = poi.category ? `marker-${poi.category}` : '';
 
-          const popup = new mapboxgl.Popup({ offset: 25 }).setHTML(`
+          console.log('Creating popup for POI:', poi);
+          const slugValue = typeof poi.slug === 'string' ? poi.slug : poi.slug.current;
+          console.log('Using slug value:', slugValue);
+          const popup = new mapboxgl.Popup({ offset: [0, -15] }).setHTML(`
             <div class="p-2 min-w-[200px]">
               <h3 class="font-semibold mb-2">${poi.name}</h3>
               <a
-                href="/attractions/${poi.slug}"
+                href="/attractions/${slugValue}"
                 class="inline-block px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition-colors"
               >
                 View Details
