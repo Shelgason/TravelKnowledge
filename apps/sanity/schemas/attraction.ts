@@ -58,6 +58,7 @@ export default defineType({
           { title: 'Beach', value: 'beach' },
           { title: 'Canyon', value: 'canyon' },
           { title: 'Pool', value: 'pool' },
+          { title: 'Spa', value: 'spa' },
           { title: 'Museum', value: 'museum' },
           { title: 'Hike', value: 'hike' },
         ],

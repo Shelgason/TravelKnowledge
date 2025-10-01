@@ -42,19 +42,21 @@ export default async function AttractionPage({ params }: PageProps) {
   }
 
   return (
-    <main className="container mx-auto px-4 py-8 max-w-4xl">
+    <main className="container mx-auto px-4 py-4 sm:py-6 md:py-8 max-w-4xl">
       {attraction.mainImage && (
-        <div className="relative w-full h-64 md:h-96 mb-8 rounded-lg overflow-hidden">
+        <div className="relative w-full h-48 sm:h-56 md:h-64 lg:h-96 mb-4 sm:mb-6 md:mb-8 rounded-lg overflow-hidden">
           <Image
             src={urlFor(attraction.mainImage)!.url()}
             alt={attraction.name}
             fill
             className="object-cover"
+            sizes="(max-width: 640px) 100vw, (max-width: 768px) 90vw, 800px"
+            priority
           />
         </div>
       )}
-      <div className="mb-8">
-        <h1 className="text-4xl font-bold mb-2">{attraction.name}</h1>
+      <div className="mb-4 sm:mb-6 md:mb-8">
+        <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-2">{attraction.name}</h1>
         {attraction.category && (
           <span className="inline-block px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-sm">
             {attraction.category}
@@ -62,7 +64,7 @@ export default async function AttractionPage({ params }: PageProps) {
         )}
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8 bg-gray-50 p-6 rounded-lg">
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 mb-4 sm:mb-6 md:mb-8 bg-gray-50 p-3 sm:p-4 md:p-6 rounded-lg">
         <div>
           <h3 className="font-semibold text-gray-600 mb-1">Region</h3>
           <p>{attraction.region.name}</p>

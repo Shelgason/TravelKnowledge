@@ -37,10 +37,10 @@ export default async function MapPage() {
   }
 
   return (
-    <div className="max-w-4xl mx-auto p-8">
-      <h1 className="text-2xl font-bold mb-4">Explore Iceland</h1>
+    <div className="max-w-4xl mx-auto px-4 py-4 sm:p-6 md:p-8">
+      <h1 className="text-xl sm:text-2xl font-bold mb-2 sm:mb-4">Explore Iceland</h1>
       <div
-        style={{ height: '700px' }}
+        style={{ height: 'calc(100vh - 180px)', minHeight: '400px' }}
         className="w-full bg-white rounded-lg shadow-sm overflow-hidden"
       >
         <MapShell

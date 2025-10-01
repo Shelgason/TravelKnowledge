@@ -76,12 +76,12 @@ export default function MapShell({ pois }: MapShellProps) {
           console.log('Creating popup for POI:', poi);
           const slugValue = typeof poi.slug === 'string' ? poi.slug : poi.slug.current;
           console.log('Using slug value:', slugValue);
-          const popup = new mapboxgl.Popup({ offset: [0, -15] }).setHTML(`
-            <div class="p-2 min-w-[200px]">
-              <h3 class="font-semibold mb-2">${poi.name}</h3>
+          const popup = new mapboxgl.Popup({ offset: [0, -15], maxWidth: '300px' }).setHTML(`
+            <div class="p-2 sm:p-3">
+              <h3 class="font-semibold mb-2 text-sm sm:text-base">${poi.name}</h3>
               <a
                 href="/attractions/${slugValue}"
-                class="inline-block px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition-colors"
+                class="inline-block px-3 py-1 sm:px-4 sm:py-2 bg-blue-500 text-white text-sm rounded hover:bg-blue-600 transition-colors"
               >
                 View Details
               </a>
@@ -108,7 +108,7 @@ export default function MapShell({ pois }: MapShellProps) {
   }, [pois]);
 
   return (
-    <div style={{ width: '85%', height: '100%', position: 'relative', margin: '0 auto' }}>
+    <div style={{ width: '100%', height: '100%', position: 'relative' }}>
       <div
         ref={mapContainer}
         style={{
