@@ -3,13 +3,6 @@
 import './globals.css';
 import 'mapbox-gl/dist/mapbox-gl.css';
 import Link from 'next/link';
-import type { Metadata } from 'next';
-
-export const metadata: Metadata = {
-  title: 'TravelKnowledge',
-  description: 'Explore interesting places around the world',
-  viewport: 'width=device-width, initial-scale=1, maximum-scale=1',
-};
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
