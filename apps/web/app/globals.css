@@ -64,3 +64,9 @@ body {
 .marker-default {
   background-color: #3b82f6; /* blue-500 */
 }
+
+/* Fix for attraction image sizing */
+.attraction-image {
+  max-height: 400px !important;
+  object-fit: contain;
+}

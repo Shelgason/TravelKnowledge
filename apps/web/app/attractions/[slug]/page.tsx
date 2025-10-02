@@ -42,79 +42,114 @@ export default async function AttractionPage({ params }: PageProps) {
   }
 
   return (
-    <main className="container mx-auto px-4 py-4 sm:py-6 md:py-8 max-w-4xl">
-      {attraction.mainImage && (
-        <div className="relative w-full h-48 sm:h-56 md:h-64 lg:h-96 mb-4 sm:mb-6 md:mb-8 rounded-lg overflow-hidden">
-          <Image
-            src={urlFor(attraction.mainImage)!.url()}
-            alt={attraction.name}
-            fill
-            className="object-cover"
-            sizes="(max-width: 640px) 100vw, (max-width: 768px) 90vw, 800px"
-            priority
-          />
-        </div>
-      )}
-      <div className="mb-4 sm:mb-6 md:mb-8">
-        <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-2">{attraction.name}</h1>
-        {attraction.category && (
-          <span className="inline-block px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-sm">
-            {attraction.category}
+    <main className="container mx-auto px-4 py-6 max-w-6xl">
+      {/* Hero Section with Name and Category */}
+      <div className="mb-6">
+        <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-3">{attraction.name}</h1>
+        <div className="flex flex-wrap items-center gap-3 mb-2">
+          {attraction.category && (
+            <span className="inline-block px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-sm font-medium">
+              {attraction.category.charAt(0).toUpperCase() + attraction.category.slice(1)}
+            </span>
+          )}
+          <span className="inline-block px-3 py-1 bg-green-100 text-green-800 rounded-full text-sm font-medium">
+            {attraction.region.name}
           </span>
-        )}
+        </div>
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 mb-4 sm:mb-6 md:mb-8 bg-gray-50 p-3 sm:p-4 md:p-6 rounded-lg">
-        <div>
-          <h3 className="font-semibold text-gray-600 mb-1">Region</h3>
-          <p>{attraction.region.name}</p>
+      {/* Two-column layout for desktop, single column on mobile */}
+      <div className="grid grid-cols-1 lg:grid-cols-5 gap-8 mb-8">
+        {/* Left column - Image */}
+        <div className="lg:col-span-3">
+          {attraction.mainImage && (
+            <div className="w-full rounded-lg overflow-hidden shadow-md">
+              <Image
+                src={urlFor(attraction.mainImage)!.url()}
+                alt={attraction.name}
+                width={800}
+                height={400}
+                className="object-cover object-center attraction-image"
+                sizes="(max-width: 1024px) 100vw, 60vw"
+                priority
+              />
+            </div>
+          )}
         </div>
-        <div>
-          <h3 className="font-semibold text-gray-600 mb-1">Visit Duration</h3>
-          <p>
-            {attraction.visitDurationMin
-              ? `${attraction.visitDurationMin} - ${attraction.visitDurationMax || attraction.visitDurationMin} hours`
-              : 'Duration not specified'}
-          </p>
+
+        {/* Right column - Details */}
+        <div className="lg:col-span-2">
+          {/* Quick Info Card */}
+          <div className="bg-white rounded-lg shadow-md p-6 mb-6">
+            <h2 className="text-xl font-semibold mb-4 pb-2 border-b border-gray-200">
+              Visit Information
+            </h2>
+
+            <div className="mb-4">
+              <h3 className="font-semibold text-gray-700">Duration</h3>
+              {attraction.visitDurationMin ? (
+                <p className="text-gray-600">
+                  {attraction.visitDurationMin}
+                  {attraction.visitDurationMax &&
+                  attraction.visitDurationMax !== attraction.visitDurationMin
+                    ? ` - ${attraction.visitDurationMax}`
+                    : ''}{' '}
+                  hours
+                </p>
+              ) : (
+                <p className="text-gray-500 italic">Not available</p>
+              )}
+            </div>
+
+            {attraction.facilities && attraction.facilities.length > 0 && (
+              <div>
+                <h3 className="font-semibold text-gray-700 mb-1">Facilities</h3>
+                <div className="flex flex-wrap gap-2">
+                  {attraction.facilities.map(facility => (
+                    <span
+                      key={facility}
+                      className="inline-block px-2 py-1 bg-gray-100 text-gray-700 text-xs rounded"
+                    >
+                      {facility.replace(/-/g, ' ')}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
         </div>
-        {attraction.facilities && attraction.facilities.length > 0 && (
-          <div>
-            <h3 className="font-semibold text-gray-600 mb-1">Facilities</h3>
-            <ul className="space-y-1">
-              {attraction.facilities.map(facility => (
-                <li key={facility} className="text-sm">
-                  {facility}
-                </li>
-              ))}
-            </ul>
+      </div>
+
+      {/* Description Section */}
+      <div className="bg-white rounded-lg shadow-md p-6 mb-8">
+        <h2 className="text-xl font-semibold mb-4 pb-2 border-b border-gray-200">
+          About {attraction.name}
+        </h2>
+        {attraction.description && (
+          <div className="prose max-w-none">
+            <p className="text-gray-700 leading-relaxed">{attraction.description}</p>
           </div>
         )}
       </div>
 
-      {attraction.description && (
-        <div className="prose max-w-none mb-8">
-          <p className="text-gray-700 leading-relaxed">{attraction.description}</p>
-        </div>
-      )}
+      {/* Region Information */}
+      <div className="bg-white rounded-lg shadow-md p-6 mb-8">
+        <h2 className="text-xl font-semibold mb-4 pb-2 border-b border-gray-200">
+          About {attraction.region.name}
+        </h2>
+        {attraction.region.intro ? (
+          <p className="text-gray-700 leading-relaxed">{attraction.region.intro}</p>
+        ) : (
+          <p className="text-gray-500 italic">Region information coming soon</p>
+        )}
+      </div>
 
-      <Link
-        href="/map"
-        className="inline-flex items-center text-blue-600 hover:text-blue-800 transition-colors"
-      >
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          className="h-4 w-4 mr-2"
-          viewBox="0 0 20 20"
-          fill="currentColor"
-        >
-          <path
-            fillRule="evenodd"
-            d="M9.707 16.707a1 1 0 01-1.414 0l-6-6a1 1 0 010-1.414l6-6a1 1 0 011.414 1.414L4.414 9H17a1 1 0 110 2H4.414l5.293 5.293a1 1 0 010 1.414z"
-            clipRule="evenodd"
-          />
-        </svg>
-        Back to Map
-      </Link>
+      {/* Subtle navigation */}
+      <div className="text-center pb-8">
+        <Link href="/map" className="text-blue-600 hover:text-blue-800 text-sm">
+          Return to Map
+        </Link>
+      </div>
     </main>
   );
 }

@@ -58,7 +58,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
               </div>
             </div>
           </div>
-          
+
           {/* Mobile menu, show/hide based on menu state */}
           <div className="hidden md:hidden bg-white shadow-md" id="mobile-menu">
             <div className="px-2 pt-2 pb-3 space-y-1">
