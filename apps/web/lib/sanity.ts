@@ -103,19 +103,92 @@ export interface Guide {
   title: string;
   slug: { current: string };
   body: any[]; // This is for portable text content
+  region?: {
+    slug: { current: string };
+    name: string;
+  };
 }
 
 export async function fetchGuideBySlug(slug: string): Promise<Guide | null> {
-  const guides = await client.fetch(
+  const guide = await client.fetch(
     `*[_type == "guide" && slug.current == $slug][0] {
       title,
       "slug": slug.current,
-      body
+      body,
+      region->{
+        "slug": slug.current,
+        name
+      }
     }`,
     { slug }
   );
 
-  return guides || null;
+  return guide || null;
+}
+
+export async function fetchAllGuides(): Promise<Guide[]> {
+  const guides = await client.fetch(
+    `*[_type == "guide"] | order(title asc) {
+      title,
+      "slug": slug.current,
+      body,
+      region->{
+        "slug": slug.current,
+        name
+      }
+    }`
+  );
+
+  return guides || [];
+}
+
+export async function fetchAttractionsByRegionSlug(regionSlug: string): Promise<MapAttraction[]> {
+  const attractions = await client.fetch(
+    `*[_type == "attraction" && region->slug.current == $regionSlug] | order(name asc) {
+      slug,
+      name,
+      coords,
+      category,
+      region->{
+        "slug": slug.current,
+        name
+      }
+    }`,
+    { regionSlug }
+  );
+
+  return attractions || [];
+}
+
+export interface Region {
+  name: string;
+  slug: { current: string };
+  intro: string;
+}
+
+export async function fetchRegionBySlug(slug: string): Promise<Region | null> {
+  const region = await client.fetch(
+    `*[_type == "region" && slug.current == $slug][0] {
+      name,
+      "slug": slug.current,
+      intro
+    }`,
+    { slug }
+  );
+
+  return region || null;
+}
+
+export async function fetchAllRegions(): Promise<Region[]> {
+  const regions = await client.fetch(
+    `*[_type == "region"] | order(name asc) {
+      name,
+      "slug": slug.current,
+      intro
+    }`
+  );
+
+  return regions || [];
 }
 
 // Helper to ensure slugs are properly referenced

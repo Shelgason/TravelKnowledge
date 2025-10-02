@@ -52,6 +52,12 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                 <Link href="/map" className="text-gray-700 hover:text-gray-900">
                   Map
                 </Link>
+                <Link href="/guides" className="text-gray-700 hover:text-gray-900">
+                  Guides
+                </Link>
+                <Link href="/regions" className="text-gray-700 hover:text-gray-900">
+                  Regions
+                </Link>
                 <Link href="/about" className="text-gray-700 hover:text-gray-900">
                   About
                 </Link>
@@ -67,6 +73,18 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                 className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50"
               >
                 Map
+              </Link>
+              <Link
+                href="/guides"
+                className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50"
+              >
+                Guides
+              </Link>
+              <Link
+                href="/regions"
+                className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50"
+              >
+                Regions
               </Link>
               <Link
                 href="/about"
