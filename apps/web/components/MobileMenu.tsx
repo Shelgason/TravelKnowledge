@@ -33,7 +33,10 @@ export default function MobileMenu({ isOpen, onClose }: MobileMenuProps) {
 
     return () => {
       document.removeEventListener('keydown', handleEscape);
-      document.body.style.overflow = '';
+      // Ensure we reset overflow only if the menu was open
+      if (isOpen) {
+        document.body.style.overflow = '';
+      }
     };
   }, [isOpen, onClose]);
 
