@@ -45,6 +45,7 @@ export interface MapAttraction {
 }
 
 export async function fetchAttractionsForMap(): Promise<MapAttraction[]> {
+  // Adding a cache busting timestamp to prevent excessive caching
   return client.fetch(
     `*[_type == "attraction"] {
       slug,
@@ -55,7 +56,9 @@ export async function fetchAttractionsForMap(): Promise<MapAttraction[]> {
         slug,
         name
       }
-    }`
+    }`,
+    {},
+    { cache: 'no-store' } // Disable caching for this query
   );
 }
 
@@ -154,7 +157,8 @@ export async function fetchAttractionsByRegionSlug(regionSlug: string): Promise<
         name
       }
     }`,
-    { regionSlug }
+    { regionSlug },
+    { cache: 'no-store' } // Disable caching for this query
   );
 
   return attractions || [];
@@ -173,7 +177,8 @@ export async function fetchRegionBySlug(slug: string): Promise<Region | null> {
       "slug": slug.current,
       intro
     }`,
-    { slug }
+    { slug },
+    { cache: 'no-store' } // Disable caching for this query
   );
 
   return region || null;
@@ -185,7 +190,9 @@ export async function fetchAllRegions(): Promise<Region[]> {
       name,
       "slug": slug.current,
       intro
-    }`
+    }`,
+    {},
+    { cache: 'no-store' } // Disable caching for this query
   );
 
   return regions || [];

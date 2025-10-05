@@ -3,10 +3,14 @@ import Link from 'next/link';
 import { fetchRegionBySlug, fetchAllRegions, fetchAttractionsByRegionSlug } from '@/lib/sanity';
 import { Metadata } from 'next';
 
+// Disable caching for this route
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
 export async function generateStaticParams() {
   const regions = await fetchAllRegions();
   return regions.map(region => ({
-    slug: region.slug,
+    slug: typeof region.slug === 'string' ? region.slug : region.slug.current,
   }));
 }
 
@@ -31,7 +35,9 @@ interface PageProps {
 }
 
 export default async function RegionPage({ params }: PageProps) {
+  console.log('Fetching region with slug:', params.slug);
   const region = await fetchRegionBySlug(params.slug);
+  console.log('Fetched region:', region);
 
   if (!region) {
     notFound();

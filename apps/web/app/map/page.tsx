@@ -20,8 +20,13 @@ function FilterBar({ className = '' }: FilterBarProps) {
   );
 }
 
+// Disable caching for this route
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
 export default async function MapPage() {
   const attractions = await fetchAttractionsForMap();
+  console.log('Attractions fetched for map:', JSON.stringify(attractions, null, 2));
 
   if (!attractions?.length) {
     return (

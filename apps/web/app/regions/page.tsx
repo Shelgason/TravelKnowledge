@@ -7,8 +7,13 @@ export const metadata: Metadata = {
   description: 'Discover attractions and travel guides by region',
 };
 
+// Disable caching for this route
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
 export default async function RegionsPage() {
   const regions = await fetchAllRegions();
+  console.log('Regions fetched for page:', JSON.stringify(regions, null, 2));
 
   return (
     <main className="container mx-auto px-4 py-8 max-w-6xl">
@@ -25,7 +30,7 @@ export default async function RegionsPage() {
           {regions.map(region => (
             <Link
               href={`/regions/${region.slug}`}
-              key={region.slug}
+              key={region.slug.toString()}
               className="bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300 overflow-hidden flex flex-col h-full"
             >
               <div className="p-6 flex flex-col flex-grow">
