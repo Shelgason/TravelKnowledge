@@ -11,6 +11,7 @@ import PhotoTips from '@/components/PhotoTips';
 import Breadcrumbs from '@/components/Breadcrumbs';
 import ImageCarousel from '@/components/ImageCarousel';
 import FAQAccordion from '@/components/FAQAccordion';
+import LocalToC from '@/components/LocalToC';
 import { urlConfig } from '@/lib/config';
 
 // Nearby attractions will be implemented in the future
@@ -163,6 +164,21 @@ export default async function AttractionPage({ params }: PageProps) {
         <ImageCarousel images={galleryImages} altText={attraction.name} />
       )}
 
+      {/* Table of Contents - only visible on mobile at this location */}
+      <div className="lg:hidden">
+        <LocalToC
+          items={[
+            { href: '#about', label: 'About' },
+            ...(attraction.practical ? [{ href: '#practical', label: 'Practical Info' }] : []),
+            { href: '#map', label: 'Map' },
+            ...(attraction.photoTips ? [{ href: '#phototips', label: 'Photo Tips' }] : []),
+            ...(faqItems.length > 0 ? [{ href: '#faq', label: 'FAQ' }] : []),
+            { href: '#nearby', label: 'Nearby' },
+            { href: '#share', label: 'Share & Download' },
+          ]}
+        />
+      </div>
+
       {/* Main content grid layout */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         {/* Left content (2/3 width on desktop) */}
@@ -249,6 +265,21 @@ export default async function AttractionPage({ params }: PageProps) {
 
         {/* Right sidebar (1/3 width on desktop) */}
         <div className="lg:col-span-1">
+          {/* Table of Contents - only visible on desktop */}
+          <div className="hidden lg:block mb-6">
+            <LocalToC
+              items={[
+                { href: '#about', label: 'About' },
+                ...(attraction.practical ? [{ href: '#practical', label: 'Practical Info' }] : []),
+                { href: '#map', label: 'Map' },
+                ...(attraction.photoTips ? [{ href: '#phototips', label: 'Photo Tips' }] : []),
+                ...(faqItems.length > 0 ? [{ href: '#faq', label: 'FAQ' }] : []),
+                { href: '#nearby', label: 'Nearby' },
+                { href: '#share', label: 'Share & Download' },
+              ]}
+            />
+          </div>
+
           {/* 8. Share & Download */}
           <section id="share" className="mb-6">
             <ShareDownload
