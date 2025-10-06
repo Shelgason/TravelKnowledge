@@ -1,19 +1,23 @@
-'use client';
-
 import './globals.css';
 import 'mapbox-gl/dist/mapbox-gl.css';
-import Header from '../components/Header';
-import Footer from '../components/Footer';
+import { Metadata } from 'next';
+import { urlConfig } from '@/lib/config';
+import ClientLayout from '../components/ClientLayout';
+
+export const metadata: Metadata = {
+  title: {
+    default: 'TravelKnowledge',
+    template: '%s | TravelKnowledge',
+  },
+  description: 'Discover and explore amazing travel destinations with insider knowledge',
+  metadataBase: new URL(urlConfig.siteUrl),
+};
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
       <body className="min-h-screen bg-gray-50 flex flex-col">
-        <Header />
-        <main className="flex-1 mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8 py-6">
-          {children}
-        </main>
-        <Footer />
+        <ClientLayout>{children}</ClientLayout>
       </body>
     </html>
   );

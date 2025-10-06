@@ -1,26 +1,14 @@
 import { createClient } from '@sanity/client';
 import imageUrlBuilder from '@sanity/image-url';
 import type { SanityAsset } from '@sanity/image-url/lib/types/types';
+import { sanityConfig } from './config';
 
-// Validate environment variables
-if (!process.env.SANITY_PROJECT_ID) {
-  throw new Error('Missing SANITY_PROJECT_ID');
-}
-
-if (!process.env.SANITY_DATASET) {
-  throw new Error('Missing SANITY_DATASET');
-}
-
-if (!process.env.SANITY_API_VERSION) {
-  throw new Error('Missing SANITY_API_VERSION');
-}
-
-// Create Sanity client
+// Create Sanity client with configuration from centralized config module
 export const client = createClient({
-  projectId: process.env.SANITY_PROJECT_ID,
-  dataset: process.env.SANITY_DATASET,
-  apiVersion: process.env.SANITY_API_VERSION,
-  useCdn: process.env.NODE_ENV === 'production',
+  projectId: sanityConfig.projectId,
+  dataset: sanityConfig.dataset,
+  apiVersion: sanityConfig.apiVersion,
+  useCdn: sanityConfig.useCdn,
 });
 
 // Set up image builder
@@ -66,7 +54,7 @@ export interface FullAttraction extends Omit<MapAttraction, 'region'> {
   description: string;
   visitDurationMin?: number;
   visitDurationMax?: number;
-  facilities: string[];
+  facilities?: string[];
   mainImage: SanityAsset;
   gallery: SanityAsset[];
   region: {
@@ -74,6 +62,37 @@ export interface FullAttraction extends Omit<MapAttraction, 'region'> {
     name: string;
     intro: string;
   };
+  practical?: {
+    parking?: {
+      lat?: number;
+      lng?: number;
+      notes?: string;
+    };
+    approach?: {
+      walkDistanceM?: number;
+      elevationGainM?: number;
+      surface?: string;
+      notes?: string;
+    };
+    safety?: {
+      windRisk?: string;
+      iceRisk?: string;
+      otherNotes?: string;
+    };
+    facilities?: string[];
+    accessibility?: {
+      wheelchairFriendly?: boolean;
+      steps?: number;
+      railings?: boolean;
+      surface?: string;
+      notes?: string;
+    };
+  };
+  mapSnippet?: {
+    zoom?: number;
+    showScale?: boolean;
+  };
+  photoTips?: string;
 }
 
 export async function fetchAttractionBySlug(slug: string): Promise<FullAttraction | null> {
@@ -90,6 +109,37 @@ export async function fetchAttractionBySlug(slug: string): Promise<FullAttractio
       facilities,
       mainImage,
       gallery,
+      practical {
+        parking {
+          lat,
+          lng,
+          notes
+        },
+        approach {
+          walkDistanceM,
+          elevationGainM,
+          surface,
+          notes
+        },
+        safety {
+          windRisk,
+          iceRisk,
+          otherNotes
+        },
+        facilities,
+        accessibility {
+          wheelchairFriendly,
+          steps,
+          railings,
+          surface,
+          notes
+        }
+      },
+      mapSnippet {
+        zoom,
+        showScale
+      },
+      photoTips,
       "region": region->{
         "slug": slug.current,
         name,
