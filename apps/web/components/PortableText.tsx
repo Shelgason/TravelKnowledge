@@ -1,9 +1,10 @@
 import { PortableText as BasePortableText } from '@portabletext/react';
+import type { PortableTextBlock } from '@portabletext/types';
 import Image from 'next/image';
 import { urlFor } from '@/lib/sanity';
 
 interface PortableTextProps {
-  value: any[] | null | undefined;
+  value: PortableTextBlock[] | null | undefined;
 }
 
 const components = {

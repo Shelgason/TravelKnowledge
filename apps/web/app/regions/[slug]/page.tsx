@@ -2,10 +2,11 @@ import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import { fetchRegionBySlug, fetchAllRegions, fetchAttractionsByRegionSlug } from '@/lib/sanity';
 import { Metadata } from 'next';
+import { logger } from '@/lib/logger';
+import { CACHE_REVALIDATE_TIME } from '@/lib/map-config';
 
-// Disable caching for this route
-export const dynamic = 'force-dynamic';
-export const revalidate = 0;
+// Revalidate every hour
+export const revalidate = CACHE_REVALIDATE_TIME;
 
 export async function generateStaticParams() {
   const regions = await fetchAllRegions();
@@ -35,9 +36,9 @@ interface PageProps {
 }
 
 export default async function RegionPage({ params }: PageProps) {
-  console.log('Fetching region with slug:', params.slug);
+  logger.debug('Fetching region with slug:', params.slug);
   const region = await fetchRegionBySlug(params.slug);
-  console.log('Fetched region:', region);
+  logger.debug('Fetched region:', region);
 
   if (!region) {
     notFound();

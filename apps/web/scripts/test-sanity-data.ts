@@ -25,12 +25,15 @@ async function testSanityData() {
     console.log('\nFetching all attractions...');
     const attractions = await fetchAttractionsForMap();
     console.log(`Found ${attractions.length} attractions:`);
-    
+
     // Group attractions by region for easier testing
-    const attractionsByRegion = {};
+    const attractionsByRegion: Record<string, typeof attractions> = {};
     attractions.forEach(attraction => {
       if (attraction.region) {
-        const regionSlug = attraction.region.slug.current || attraction.region.slug;
+        const regionSlug =
+          typeof attraction.region.slug === 'string'
+            ? attraction.region.slug
+            : attraction.region.slug.current;
         if (!attractionsByRegion[regionSlug]) {
           attractionsByRegion[regionSlug] = [];
         }
@@ -43,7 +46,9 @@ async function testSanityData() {
       const regionName = regionAttractions[0]?.region?.name || 'Unknown Region';
       console.log(`\nRegion: ${regionName} (${regionSlug})`);
       regionAttractions.forEach(attraction => {
-        console.log(`- Attraction: "${attraction.name}" - URL: /attractions/${attraction.slug.current}`);
+        console.log(
+          `- Attraction: "${attraction.name}" - URL: /attractions/${attraction.slug.current}`
+        );
       });
     }
 
@@ -54,13 +59,12 @@ async function testSanityData() {
     guides.forEach(guide => {
       console.log(`- Guide Detail: /guides/${guide.slug}`);
     });
-    
+
     console.log('\nRegion Pages:');
     console.log('- Main Regions Page: /regions');
     regions.forEach(region => {
       console.log(`- Region Detail: /regions/${region.slug}`);
     });
-
   } catch (error) {
     console.error('Error fetching data:', error);
   }

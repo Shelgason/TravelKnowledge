@@ -2,6 +2,7 @@
 
 import { useState, useRef, useEffect } from 'react';
 import { toGPXWaypoint, googleMapsPlaceLink } from '@/lib/mapLinks';
+import { logger } from '@/lib/logger';
 
 interface ShareDownloadProps {
   name: string;
@@ -41,7 +42,7 @@ export default function ShareDownload({ name, lat, lng, pageUrl, slug }: ShareDo
         setCopied(false);
       }, 2000);
     } catch (error) {
-      console.error('Failed to copy:', error);
+      logger.error('Failed to copy:', error);
     }
   };
 

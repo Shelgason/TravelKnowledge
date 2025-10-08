@@ -1,19 +1,20 @@
 import { fetchAllRegions } from '@/lib/sanity';
 import Link from 'next/link';
 import { Metadata } from 'next';
+import { logger } from '@/lib/logger';
+import { CACHE_REVALIDATE_TIME } from '@/lib/map-config';
 
 export const metadata: Metadata = {
   title: 'Explore Regions - TravelKnowledge',
   description: 'Discover attractions and travel guides by region',
 };
 
-// Disable caching for this route
-export const dynamic = 'force-dynamic';
-export const revalidate = 0;
+// Revalidate every hour
+export const revalidate = CACHE_REVALIDATE_TIME;
 
 export default async function RegionsPage() {
   const regions = await fetchAllRegions();
-  console.log('Regions fetched for page:', JSON.stringify(regions, null, 2));
+  logger.debug('Regions fetched for page:', JSON.stringify(regions, null, 2));
 
   return (
     <main className="container mx-auto px-4 py-8 max-w-6xl">

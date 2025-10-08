@@ -1,6 +1,7 @@
 import { fetchAllGuides } from '@/lib/sanity';
 import Link from 'next/link';
 import { Metadata } from 'next';
+import Badge from '@/components/Badge';
 
 export const metadata: Metadata = {
   title: 'Travel Guides - TravelKnowledge',
@@ -24,8 +25,8 @@ export default async function GuidesPage() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {guides.map(guide => (
             <Link
-              href={`/guides/${guide.slug}`}
-              key={guide.slug}
+              href={`/guides/${guide.slug.current}`}
+              key={guide.slug.current}
               className="bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300 overflow-hidden flex flex-col h-full"
             >
               <div className="p-6 flex flex-col flex-grow">
@@ -33,9 +34,7 @@ export default async function GuidesPage() {
 
                 {guide.region && (
                   <div className="mt-auto pt-4">
-                    <span className="inline-block px-3 py-1 bg-green-100 text-green-800 rounded-full text-sm font-medium">
-                      {guide.region.name}
-                    </span>
+                    <Badge variant="green">{guide.region.name}</Badge>
                   </div>
                 )}
               </div>

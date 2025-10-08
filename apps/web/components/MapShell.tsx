@@ -3,6 +3,8 @@
 import { useEffect, useRef, useState } from 'react';
 import mapboxgl, { Map as MapboxMap } from 'mapbox-gl';
 import 'mapbox-gl/dist/mapbox-gl.css';
+import { logger } from '@/lib/logger';
+import { ICELAND_MAP_CONFIG } from '@/lib/map-config';
 
 interface POI {
   slug: string | { current: string };
@@ -17,7 +19,7 @@ interface MapShellProps {
 }
 
 export default function MapShell({ pois }: MapShellProps) {
-  console.log('MapShell rendered with pois:', pois);
+  logger.debug('MapShell rendered with pois:', pois);
   const mapContainer = useRef<HTMLDivElement>(null);
   const [loaded, setLoaded] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -45,24 +47,21 @@ export default function MapShell({ pois }: MapShellProps) {
       const map = new mapboxgl.Map({
         container: mapContainer.current,
         style: 'mapbox://styles/mapbox/streets-v11',
-        center: [-19.0, 64.5],
-        zoom: 5.2,
-        minZoom: 5.2,
-        maxBounds: [
-          [-25.0, 63.2],
-          [-12.0, 66.8],
-        ],
+        center: ICELAND_MAP_CONFIG.defaultCenter,
+        zoom: ICELAND_MAP_CONFIG.defaultZoom,
+        minZoom: ICELAND_MAP_CONFIG.minZoom,
+        maxBounds: ICELAND_MAP_CONFIG.bounds,
         dragRotate: false,
         pitchWithRotate: false,
       });
 
       map.on('load', () => {
-        console.log('Map loaded, adding markers for pois:', pois);
+        logger.debug('Map loaded, adding markers for pois:', pois);
         setLoaded(true);
 
         // Add markers
         pois.forEach(poi => {
-          console.log('Creating marker for:', poi);
+          logger.debug('Creating marker for:', poi);
           const markerEl = document.createElement('div');
           markerEl.style.width = '24px';
           markerEl.style.height = '24px';
@@ -73,9 +72,9 @@ export default function MapShell({ pois }: MapShellProps) {
           markerEl.className = `marker-${poi.category || 'default'}`;
           markerEl.style.backgroundColor = '';
 
-          console.log('Creating popup for POI:', poi);
+          logger.debug('Creating popup for POI:', poi);
           const slugValue = typeof poi.slug === 'string' ? poi.slug : poi.slug.current;
-          console.log('Using slug value:', slugValue);
+          logger.debug('Using slug value:', slugValue);
           const popup = new mapboxgl.Popup({ offset: [0, -15], maxWidth: '300px' }).setHTML(`
             <div class="p-2 sm:p-3">
               <h3 class="font-semibold mb-2 text-sm sm:text-base">${poi.name}</h3>

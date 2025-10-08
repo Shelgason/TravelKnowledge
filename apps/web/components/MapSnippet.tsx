@@ -5,6 +5,7 @@ import * as mapboxgl from 'mapbox-gl';
 import 'mapbox-gl/dist/mapbox-gl.css';
 import Link from 'next/link';
 import { mapboxConfig } from '@/lib/config';
+import { ATTRACTION_MAP_ZOOM } from '@/lib/map-config';
 
 // Define MapboxMap type for TypeScript
 type MapboxMap = mapboxgl.Map;
@@ -20,7 +21,7 @@ interface MapSnippetProps {
 export default function MapSnippet({
   lat,
   lng,
-  zoom = 12,
+  zoom = ATTRACTION_MAP_ZOOM,
   showScale = false,
   slug,
 }: MapSnippetProps) {
