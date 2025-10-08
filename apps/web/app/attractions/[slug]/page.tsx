@@ -13,6 +13,8 @@ import ImageCarousel from '@/components/ImageCarousel';
 import FAQAccordion from '@/components/FAQAccordion';
 import LocalToC from '@/components/LocalToC';
 import { urlConfig } from '@/lib/config';
+import { generateAttractionJsonLd } from '@/lib/structured-data';
+import Badge from '@/components/Badge';
 
 // Nearby attractions will be implemented in the future
 
@@ -45,20 +47,23 @@ export async function generateMetadata({
 
   // Add OpenGraph metadata if an image is available
   if (attraction.mainImage) {
-    const imageUrl = urlFor(attraction.mainImage)!.width(1200).height(630).url();
-    metadata.openGraph = {
-      title: `${attraction.name} - TravelKnowledge`,
-      description: attraction.description,
-      images: [
-        {
-          url: imageUrl,
-          width: 1200,
-          height: 630,
-          alt: attraction.name,
-        },
-      ],
-      type: 'website',
-    };
+    const imageBuilder = urlFor(attraction.mainImage);
+    if (imageBuilder) {
+      const imageUrl = imageBuilder.width(1200).height(630).url();
+      metadata.openGraph = {
+        title: `${attraction.name} - TravelKnowledge`,
+        description: attraction.description,
+        images: [
+          {
+            url: imageUrl,
+            width: 1200,
+            height: 630,
+            alt: attraction.name,
+          },
+        ],
+        type: 'website',
+      };
+    }
   }
 
   return metadata;
@@ -97,12 +102,14 @@ export default async function AttractionPage({ params }: PageProps) {
     ? [attraction.mainImage, ...(attraction.gallery || [])]
     : attraction.gallery || [];
 
-  // FAQs would come from the schema if they existed
-  // For now, create an empty array until schema is updated
-  const faqItems: { question: string; answer: string }[] = [];
+  // Get FAQs from the attraction data
+  const faqItems = attraction.faqs || [];
 
   // Calculate absolute page URL using our centralized config
   const pageUrl = `${urlConfig.siteUrl}/attractions/${params.slug}`;
+
+  // Generate structured data for SEO
+  const jsonLd = generateAttractionJsonLd(attraction);
 
   // Prepare map links
   const parkingCoords =
@@ -123,6 +130,12 @@ export default async function AttractionPage({ params }: PageProps) {
 
   return (
     <main className="container mx-auto px-4 py-6 max-w-6xl">
+      {/* Structured Data for SEO */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
+
       {/* 1. Breadcrumbs + H1 + Quick facts */}
       <div className="mb-6">
         {/* Breadcrumbs */}
@@ -142,20 +155,14 @@ export default async function AttractionPage({ params }: PageProps) {
         {/* Quick facts */}
         <div className="flex flex-wrap items-center gap-3 mb-2">
           {attraction.category && (
-            <span className="inline-block px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-sm font-medium">
+            <Badge variant="blue">
               {attraction.category.charAt(0).toUpperCase() + attraction.category.slice(1)}
-            </span>
+            </Badge>
           )}
 
-          <span className="inline-block px-3 py-1 bg-green-100 text-green-800 rounded-full text-sm font-medium">
-            {attraction.region.name}
-          </span>
+          <Badge variant="green">{attraction.region.name}</Badge>
 
-          {averageVisitMinutes && (
-            <span className="inline-block px-3 py-1 bg-purple-100 text-purple-800 rounded-full text-sm font-medium">
-              ~{averageVisitMinutes} minutes
-            </span>
-          )}
+          {averageVisitMinutes && <Badge variant="purple">~{averageVisitMinutes} minutes</Badge>}
         </div>
       </div>
 
@@ -200,10 +207,8 @@ export default async function AttractionPage({ params }: PageProps) {
           {/* History section would go here if it existed in the schema */}
 
           {/* 4. Practical information */}
-          <section id="practical" className="mb-8">
-            <h2 className="text-2xl font-semibold mb-4">Practical Information</h2>
-
-            {attraction.practical ? (
+          {attraction.practical && (
+            <section id="practical" className="mb-8">
               <PracticalInfo
                 parking={attraction.practical.parking}
                 approach={attraction.practical.approach}
@@ -215,10 +220,8 @@ export default async function AttractionPage({ params }: PageProps) {
                   directionsUrl: mapLinks.parkingDirectionsUrl,
                 }}
               />
-            ) : (
-              <p className="text-gray-500 italic">Practical information coming soon</p>
-            )}
-          </section>
+            </section>
+          )}
 
           {/* Map section */}
           <section id="map" className="mb-8">

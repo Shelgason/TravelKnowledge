@@ -18,12 +18,26 @@ export default function ImageCarousel({ images, altText }: ImageCarouselProps) {
     return null;
   }
 
+  // Filter out any invalid images
+  const validImages = images.filter(img => {
+    const imageUrl = urlFor(img);
+    return imageUrl !== null;
+  });
+
+  // Don't render if there are no valid images after filtering
+  if (validImages.length === 0) {
+    return null;
+  }
+
   // Only render the first image if there's only one
-  if (images.length === 1) {
+  if (validImages.length === 1) {
+    const imageUrl = urlFor(validImages[0]);
+    if (!imageUrl) return null;
+
     return (
       <div className="w-full rounded-lg overflow-hidden shadow-md mb-6">
         <Image
-          src={urlFor(images[0])!.url()}
+          src={imageUrl.url()}
           alt={altText}
           width={800}
           height={400}
@@ -37,20 +51,23 @@ export default function ImageCarousel({ images, altText }: ImageCarouselProps) {
 
   // Navigate to the previous image
   const prevImage = () => {
-    setCurrentImageIndex(prevIndex => (prevIndex === 0 ? images.length - 1 : prevIndex - 1));
+    setCurrentImageIndex(prevIndex => (prevIndex === 0 ? validImages.length - 1 : prevIndex - 1));
   };
 
   // Navigate to the next image
   const nextImage = () => {
-    setCurrentImageIndex(prevIndex => (prevIndex === images.length - 1 ? 0 : prevIndex + 1));
+    setCurrentImageIndex(prevIndex => (prevIndex === validImages.length - 1 ? 0 : prevIndex + 1));
   };
+
+  const currentImageUrl = urlFor(validImages[currentImageIndex]);
+  if (!currentImageUrl) return null;
 
   return (
     <div className="relative w-full rounded-lg overflow-hidden shadow-md mb-6">
       {/* Current image */}
       <Image
-        src={urlFor(images[currentImageIndex])!.url()}
-        alt={`${altText} - Image ${currentImageIndex + 1} of ${images.length}`}
+        src={currentImageUrl.url()}
+        alt={`${altText} - Image ${currentImageIndex + 1} of ${validImages.length}`}
         width={800}
         height={400}
         className="object-cover object-center w-full h-auto"
@@ -92,7 +109,7 @@ export default function ImageCarousel({ images, altText }: ImageCarouselProps) {
 
       {/* Image indicators */}
       <div className="absolute bottom-2 left-1/2 transform -translate-x-1/2 flex space-x-2">
-        {images.map((_, index) => (
+        {validImages.map((_, index) => (
           <button
             key={index}
             onClick={() => setCurrentImageIndex(index)}
